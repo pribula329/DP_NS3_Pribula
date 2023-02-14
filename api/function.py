@@ -4,7 +4,9 @@ from api import visualisation
 from GUI import gui
 path = ""
 speed = 1.0
-
+line_id = "null"
+simulationOnOff = True
+count_iteration = 0
 def open_file():
     """
         Function for open file and draw nodes on board
@@ -24,14 +26,22 @@ def start_simulation():
     """
     global simulationOnOff
     global line_id
-    line_id = "null"
+    global count_iteration
+    count_iteration = 0
     simulationOnOff = True
     #visualization comunication
-    visualisation.create_transport_line(board=gui.board, handler=saxParser.handler)
+    visualisation.create_transport_line(board=gui.board, handler=saxParser.handler, iteration=count_iteration)
 
 def pause_simulation():
     global simulationOnOff
     simulationOnOff = False
+
+def resume_simulation():
+    global simulationOnOff
+    simulationOnOff = True
+    print(count_iteration)
+
+    visualisation.create_transport_line(board=gui.board, handler=saxParser.handler, iteration=count_iteration)
 
 def change_speed(varScaleSpeed):
     """
