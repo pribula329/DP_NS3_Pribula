@@ -22,9 +22,16 @@ def start_simulation():
     """
         Function for start simulation
     """
+    global simulationOnOff
+    global line_id
+    line_id = "null"
+    simulationOnOff = True
     #visualization comunication
     visualisation.create_transport_line(board=gui.board, handler=saxParser.handler)
 
+def pause_simulation():
+    global simulationOnOff
+    simulationOnOff = False
 
 def change_speed(varScaleSpeed):
     """

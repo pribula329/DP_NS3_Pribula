@@ -7,6 +7,7 @@ from GUI import zoom
 
 MAX = 5.0
 
+
 def create_node(board, handler):
     """
     Function for draw nodes to board
@@ -39,6 +40,10 @@ def create_transport_line(board, handler):
     :param handler: Sax parser handler with data
     """
 
+    global line_id
+    global simulationOnOff
+
+    # move board
     board.bind("<ButtonPress-1>", lambda event: move.move_start(event, board))
     board.bind("<B1-Motion>", lambda event: move.move_move(event, board))
 
@@ -48,8 +53,11 @@ def create_transport_line(board, handler):
     # windows scroll
     #board.bind("<MouseWheel>", lambda event: zoom.zoomer(event, board))
     i = 0
-    line_id = "null"
+    #line_id = "null"
     for t in handler.transport:
+        if simulationOnOff == False:
+            break
+
         first, last = t[0], t[1]
         # print(first)
         coordFirst = handler.node[first]
