@@ -7,6 +7,7 @@ speed = 1.0
 line_id = "null"
 simulationOnOff = True
 count_iteration = 0
+max_iteration = 0
 def open_file():
     """
         Function for open file and draw nodes on board
@@ -17,6 +18,8 @@ def open_file():
     saxParser.read_sax_parser(path)
     # visualiztion node
     gui.board.delete("all")
+    global max_iteration
+    max_iteration = saxParser.handler.transportCount
     visualisation.create_node(board=gui.board, handler=saxParser.handler)
 
 
@@ -36,12 +39,21 @@ def pause_simulation():
     global simulationOnOff
     simulationOnOff = False
 
+
 def resume_simulation():
     global simulationOnOff
     simulationOnOff = True
     print(count_iteration)
-
     visualisation.create_transport_line(board=gui.board, handler=saxParser.handler, iteration=count_iteration)
+
+
+def forward_simulation():
+    visualisation.create_step_line(board=gui.board, handler=saxParser.handler, iteration=count_iteration, step="f")
+
+
+def back_simulation():
+    visualisation.create_step_line(board=gui.board, handler=saxParser.handler, iteration=count_iteration, step="b")
+
 
 def change_speed(varScaleSpeed):
     """

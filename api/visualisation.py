@@ -16,7 +16,7 @@ def create_node(board, handler):
     """
     for i in handler.node:
         #+5 for biggest size
-        coord = float(i[2]), float(i[3]), float(i[2])+5, float(i[3])+5
+        coord = float(i[2]), float(i[3]), float(i[2])+MAX, float(i[3])+MAX
         print(type(coord[0]))
         ###only for max point later DELETE
         y = list(coord)
@@ -32,6 +32,14 @@ def create_node(board, handler):
         #/2 for input ID to node
         board.create_text(float((coord[0]+coord[2])/2.0), float((coord[1]+coord[3])/2.0), text=i[0], fill="white")
 
+        # move board
+        board.bind("<ButtonPress-1>", lambda event: move.move_start(event, board))
+        board.bind("<B1-Motion>", lambda event: move.move_move(event, board))
+
+        board.bind("<ButtonPress-2>", lambda event: move.pressed2(event, board))
+        board.bind("<Motion>", lambda event: move.move_move2(event, board))
+        board.update()
+
 
 def create_transport_line(board, handler, iteration):
     """
@@ -41,12 +49,7 @@ def create_transport_line(board, handler, iteration):
     """
 
 
-    # move board
-    board.bind("<ButtonPress-1>", lambda event: move.move_start(event, board))
-    board.bind("<B1-Motion>", lambda event: move.move_move(event, board))
 
-    board.bind("<ButtonPress-2>", lambda event: move.pressed2(event, board))
-    board.bind("<Motion>", lambda event: move.move_move2(event, board))
     # todo ZOOM
     # windows scroll
     #board.bind("<MouseWheel>", lambda event: zoom.zoomer(event, board))
@@ -71,7 +74,39 @@ def create_transport_line(board, handler, iteration):
                                     (coordLast[2] + 2.5)*MAX, (coordLast[3] + 2.5)*MAX, arrow=tk.LAST, width=3, fill='green')
         #line_id = board.create_line((coordFirst[2] + 2.5), (coordFirst[3] + 2.5),
         #                  (coordLast[2] + 2.5), (coordLast[3] + 2.5), arrow=tk.LAST)
-        board.update()
-        sleep(function.speed)
+        board.after(int(function.speed*1000),board.update())
+
         function.count_iteration = function.count_iteration + 1
         print(function.count_iteration)
+        #board.update()
+        #sleep(function.speed)
+
+
+def create_step_line(board, handler, iteration, step):
+    if step=="f":
+        trans = handler.transport[iteration+1]
+        first, last = trans[0], trans[1]
+        # print(first)
+        coordFirst = handler.node[first]
+        coordLast = handler.node[last]
+        function.count_iteration = function.count_iteration + 1
+
+    if step=="b":
+        trans = handler.transport[iteration - 1]
+        first, last = trans[0], trans[1]
+        # print(first)
+        coordFirst = handler.node[first]
+        coordLast = handler.node[last]
+        function.count_iteration = function.count_iteration - 1
+
+
+    if function.line_id != "null":
+        board.delete(function.line_id)
+
+    function.line_id = board.create_line((coordFirst[2] + 2.5) * MAX, (coordFirst[3] + 2.5) * MAX,
+                                         (coordLast[2] + 2.5) * MAX, (coordLast[3] + 2.5) * MAX, arrow=tk.LAST, width=3,
+                                         fill='green')
+    # line_id = board.create_line((coordFirst[2] + 2.5), (coordFirst[3] + 2.5),
+    #                  (coordLast[2] + 2.5), (coordLast[3] + 2.5), arrow=tk.LAST)
+    board.after(int(function.speed * 1000), board.update())
+

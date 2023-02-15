@@ -14,6 +14,7 @@ class NS3Handler(xml.sax.handler.ContentHandler):
         self.node = []
         self.transport = []
         self.CurrentCount = 0
+        self.transportCount = 0
 
     # Call when an element starts
     def startElement(self, tag, attributes):
@@ -40,6 +41,8 @@ class NS3Handler(xml.sax.handler.ContentHandler):
             print("fId:", fId)
             print("tId:", tId)
             self.transport.append([int(fId),int(tId)])
+            self.transportCount += 1
+            print("Transport count:", self.transportCount)
 
 
 
