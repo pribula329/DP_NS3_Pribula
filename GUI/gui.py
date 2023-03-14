@@ -4,7 +4,8 @@ from api import function
 
 
 global board
-
+#global my_string_var
+global stepLabel
 def create_gui(gui):
     """
     Function for create GUI
@@ -40,5 +41,19 @@ def create_gui(gui):
 
     l2 = Label(gui, text="Fast")
     l2.grid(row=0, column=6)
+
+    #global my_string_var
+    global stepLabel
+    # create a StringVar class
+    my_string_var = tk.StringVar()
+
+    # set the text
+    my_string_var.set("Step: 0/0")
+
+    print(my_string_var)
+    # create a label widget
+    stepLabel = Label(gui, text=my_string_var.get())
+    stepLabel.grid(row=3, column=5)
+
 
 

@@ -4,7 +4,7 @@ import tkinter as tk
 from time import sleep
 from GUI import move
 from GUI import zoom
-
+from GUI import gui
 MAX = 5.0
 
 
@@ -74,10 +74,14 @@ def create_transport_line(board, handler, iteration):
                                     (coordLast[2] + 2.5)*MAX, (coordLast[3] + 2.5)*MAX, arrow=tk.LAST, width=3, fill='green')
         #line_id = board.create_line((coordFirst[2] + 2.5), (coordFirst[3] + 2.5),
         #                  (coordLast[2] + 2.5), (coordLast[3] + 2.5), arrow=tk.LAST)
-        board.after(int(function.speed*1000),board.update())
 
         function.count_iteration = function.count_iteration + 1
         print(function.count_iteration)
+        gui.stepLabel.config(text="Steps: " + str(function.count_iteration) + "/" + str(function.max_iteration))
+
+        board.after(int(function.speed*1000),board.update())
+
+
         #board.update()
         #sleep(function.speed)
 
@@ -91,6 +95,7 @@ def create_step_line(board, handler, iteration, step):
         coordLast = handler.node[last]
         function.count_iteration = function.count_iteration + 1
 
+
     if step=="b":
         trans = handler.transport[iteration - 1]
         first, last = trans[0], trans[1]
@@ -98,6 +103,7 @@ def create_step_line(board, handler, iteration, step):
         coordFirst = handler.node[first]
         coordLast = handler.node[last]
         function.count_iteration = function.count_iteration - 1
+
 
 
     if function.line_id != "null":
@@ -108,5 +114,7 @@ def create_step_line(board, handler, iteration, step):
                                          fill='green')
     # line_id = board.create_line((coordFirst[2] + 2.5), (coordFirst[3] + 2.5),
     #                  (coordLast[2] + 2.5), (coordLast[3] + 2.5), arrow=tk.LAST)
+    gui.stepLabel.config(text="Steps: " + str(function.count_iteration) + "/" + str(function.max_iteration))
     board.after(int(function.speed * 1000), board.update())
+
 
