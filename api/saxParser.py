@@ -13,6 +13,7 @@ class NS3Handler(xml.sax.handler.ContentHandler):
         self.address = ""
         self.node = []
         self.transport = []
+        self.metaInfo= []
         self.CurrentCount = 0
         self.transportCount = 0
 
@@ -43,6 +44,9 @@ class NS3Handler(xml.sax.handler.ContentHandler):
             self.transport.append([int(fId),int(tId)])
             self.transportCount += 1
             print("Transport count:", self.transportCount)
+            info = attributes["meta-info"]
+            print(info)
+            self.metaInfo.append(info)
 
 
 

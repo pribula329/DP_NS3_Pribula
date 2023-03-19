@@ -6,6 +6,7 @@ from api import function
 global board
 #global my_string_var
 global stepLabel
+global textLabel
 def create_gui(gui):
     """
     Function for create GUI
@@ -32,12 +33,12 @@ def create_gui(gui):
 
     # scale widget
     l1 = Label(gui, text="Slow")
-    l1.grid(row=0, column=4)
+    l1.grid(row=0, column=5)
     varScale = tk.DoubleVar()
     s1 = tk.Scale(gui, from_=0.0, to=2.0, orient="horizontal", resolution=0.10,
                   command=function.change_speed, variable=varScale)
     s1.set(1.0)
-    s1.grid(row=0, column=5)
+    s1.grid(row=1, column=5, columnspan=2, rowspan=1)
 
     l2 = Label(gui, text="Fast")
     l2.grid(row=0, column=6)
@@ -54,6 +55,21 @@ def create_gui(gui):
     # create a label widget
     stepLabel = Label(gui, text=my_string_var.get())
     stepLabel.grid(row=3, column=5)
+
+
+    global textLabel
+    # create a StringVar class
+    my_text_var = tk.StringVar()
+
+    # set the text
+    my_text_var.set("Meta-info")
+
+    textLabel = tk.Text(gui, width=35)
+    textLabel.grid(row=5,column=5, columnspan=2)
+    textLabel.insert(tk.END,my_text_var.get())
+
+
+
 
 
 

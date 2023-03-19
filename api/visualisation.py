@@ -63,6 +63,8 @@ def create_transport_line(board, handler, iteration):
         function.count_iteration = function.count_iteration + 1
         print(function.count_iteration)
         gui.stepLabel.config(text="Steps: " + str(function.count_iteration) + "/" + str(function.max_iteration))
+        gui.textLabel.delete('1.0',tk.END)
+        gui.textLabel.insert(tk.END,handler.metaInfo[function.count_iteration-1])
         if not check_transport(handler=handler,iteration=function.count_iteration,iterationNext=function.count_iteration+1):
             first, last = t[0], t[1]
             # print(first)
@@ -111,6 +113,8 @@ def create_step_line(board, handler, iteration, step):
         function.count_iteration = function.count_iteration - 1
 
     gui.stepLabel.config(text="Steps: " + str(function.count_iteration) + "/" + str(function.max_iteration))
+    gui.textLabel.delete('1.0', tk.END)
+    gui.textLabel.insert(tk.END, handler.metaInfo[function.count_iteration - 1])
     if not check:
 
         if function.line_id != "null":
@@ -121,6 +125,7 @@ def create_step_line(board, handler, iteration, step):
                                              fill='green')
         # line_id = board.create_line((coordFirst[2] + 2.5), (coordFirst[3] + 2.5),
         #                  (coordLast[2] + 2.5), (coordLast[3] + 2.5), arrow=tk.LAST)
+
 
     board.after(int(function.speed * 1000), board.update())
 
