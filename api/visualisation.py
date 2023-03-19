@@ -60,26 +60,29 @@ def create_transport_line(board, handler, iteration):
         if not function.simulationOnOff:
             break
 
-        first, last = t[0], t[1]
-        # print(first)
-        coordFirst = handler.node[first]
-        coordLast = handler.node[last]
-        # print("scale",zoom.scale)
-        #board.create_line((coordFirst[2] + 2.5) * zoom.scale, (coordFirst[3] + 2.5) * zoom.scale,
-        #                  (coordLast[2] + 2.5) * zoom.scale, (coordLast[3] + 2.5) * zoom.scale, arrow=tk.LAST)
-        if function.line_id != "null":
-            board.delete(function.line_id)
-
-        function.line_id = board.create_line((coordFirst[2] + 2.5)*MAX, (coordFirst[3] + 2.5)*MAX,
-                                    (coordLast[2] + 2.5)*MAX, (coordLast[3] + 2.5)*MAX, arrow=tk.LAST, width=3, fill='green')
-        #line_id = board.create_line((coordFirst[2] + 2.5), (coordFirst[3] + 2.5),
-        #                  (coordLast[2] + 2.5), (coordLast[3] + 2.5), arrow=tk.LAST)
-
         function.count_iteration = function.count_iteration + 1
         print(function.count_iteration)
         gui.stepLabel.config(text="Steps: " + str(function.count_iteration) + "/" + str(function.max_iteration))
+        if not check_transport(handler=handler,iteration=function.count_iteration,iterationNext=function.count_iteration+1):
+            first, last = t[0], t[1]
+            # print(first)
+            coordFirst = handler.node[first]
+            coordLast = handler.node[last]
+            # print("scale",zoom.scale)
+            #board.create_line((coordFirst[2] + 2.5) * zoom.scale, (coordFirst[3] + 2.5) * zoom.scale,
+            #                  (coordLast[2] + 2.5) * zoom.scale, (coordLast[3] + 2.5) * zoom.scale, arrow=tk.LAST)
+            if function.line_id != "null":
+                board.delete(function.line_id)
+
+            function.line_id = board.create_line((coordFirst[2] + 2.5)*MAX, (coordFirst[3] + 2.5)*MAX,
+                                        (coordLast[2] + 2.5)*MAX, (coordLast[3] + 2.5)*MAX, arrow=tk.LAST, width=3, fill='green')
+            #line_id = board.create_line((coordFirst[2] + 2.5), (coordFirst[3] + 2.5),
+            #                  (coordLast[2] + 2.5), (coordLast[3] + 2.5), arrow=tk.LAST)
+
+
 
         board.after(int(function.speed*1000),board.update())
+
 
 
         #board.update()
@@ -87,7 +90,9 @@ def create_transport_line(board, handler, iteration):
 
 
 def create_step_line(board, handler, iteration, step):
+    check = False
     if step=="f":
+        check = check_transport(handler=handler, iteration=function.count_iteration, iterationNext=function.count_iteration + 1)
         trans = handler.transport[iteration+1]
         first, last = trans[0], trans[1]
         # print(first)
@@ -97,6 +102,7 @@ def create_step_line(board, handler, iteration, step):
 
 
     if step=="b":
+        check = check_transport(handler=handler, iteration=function.count_iteration, iterationNext=function.count_iteration - 1)
         trans = handler.transport[iteration - 1]
         first, last = trans[0], trans[1]
         # print(first)
@@ -104,17 +110,31 @@ def create_step_line(board, handler, iteration, step):
         coordLast = handler.node[last]
         function.count_iteration = function.count_iteration - 1
 
-
-
-    if function.line_id != "null":
-        board.delete(function.line_id)
-
-    function.line_id = board.create_line((coordFirst[2] + 2.5) * MAX, (coordFirst[3] + 2.5) * MAX,
-                                         (coordLast[2] + 2.5) * MAX, (coordLast[3] + 2.5) * MAX, arrow=tk.LAST, width=3,
-                                         fill='green')
-    # line_id = board.create_line((coordFirst[2] + 2.5), (coordFirst[3] + 2.5),
-    #                  (coordLast[2] + 2.5), (coordLast[3] + 2.5), arrow=tk.LAST)
     gui.stepLabel.config(text="Steps: " + str(function.count_iteration) + "/" + str(function.max_iteration))
+    if not check:
+
+        if function.line_id != "null":
+            board.delete(function.line_id)
+
+        function.line_id = board.create_line((coordFirst[2] + 2.5) * MAX, (coordFirst[3] + 2.5) * MAX,
+                                             (coordLast[2] + 2.5) * MAX, (coordLast[3] + 2.5) * MAX, arrow=tk.LAST, width=3,
+                                             fill='green')
+        # line_id = board.create_line((coordFirst[2] + 2.5), (coordFirst[3] + 2.5),
+        #                  (coordLast[2] + 2.5), (coordLast[3] + 2.5), arrow=tk.LAST)
+
     board.after(int(function.speed * 1000), board.update())
 
 
+
+
+def check_transport(handler, iteration, iterationNext):
+    trans = handler.transport[iteration]
+    transNext = handler.transport[iterationNext]
+    print(trans)
+    print(transNext)
+    if trans==transNext:
+        print("su rovnake")
+        return True
+    else:
+        print("su ine")
+        return False
