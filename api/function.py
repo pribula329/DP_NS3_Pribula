@@ -5,6 +5,8 @@ from GUI import gui
 path = ""
 speed = 1.0
 line_id = "null"
+line_id_array = []
+time_line_array= []
 simulationOnOff = True
 count_iteration = 0
 max_iteration = 0

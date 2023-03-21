@@ -65,6 +65,8 @@ def create_transport_line(board, handler, iteration):
         gui.stepLabel.config(text="Steps: " + str(function.count_iteration) + "/" + str(function.max_iteration))
         gui.textLabel.delete('1.0',tk.END)
         gui.textLabel.insert(tk.END,handler.metaInfo[function.count_iteration-1])
+        gui.timeLabel.config(text="Time: " + handler.transportTime[function.count_iteration-1] +" s")
+        function.time_line_array.append(handler.transportTime[function.count_iteration - 1])
         if not check_transport(handler=handler,iteration=function.count_iteration,iterationNext=function.count_iteration+1):
             first, last = t[0], t[1]
             # print(first)
@@ -73,21 +75,47 @@ def create_transport_line(board, handler, iteration):
             # print("scale",zoom.scale)
             #board.create_line((coordFirst[2] + 2.5) * zoom.scale, (coordFirst[3] + 2.5) * zoom.scale,
             #                  (coordLast[2] + 2.5) * zoom.scale, (coordLast[3] + 2.5) * zoom.scale, arrow=tk.LAST)
-            if function.line_id != "null":
-                board.delete(function.line_id)
 
-            function.line_id = board.create_line((coordFirst[2] + 2.5)*MAX, (coordFirst[3] + 2.5)*MAX,
-                                        (coordLast[2] + 2.5)*MAX, (coordLast[3] + 2.5)*MAX, arrow=tk.LAST, width=3, fill='green')
-            #line_id = board.create_line((coordFirst[2] + 2.5), (coordFirst[3] + 2.5),
-            #                  (coordLast[2] + 2.5), (coordLast[3] + 2.5), arrow=tk.LAST)
+            #### append time of line which send data
 
 
+            new_line_id = board.create_line((coordFirst[2] + 2.5) * MAX, (coordFirst[3] + 2.5) * MAX,
+                                                 (coordLast[2] + 2.5) * MAX, (coordLast[3] + 2.5) * MAX, arrow=tk.LAST,
+                                                 width=3, fill='green')
 
-        board.after(int(function.speed*1000),board.update())
+            function.line_id_array.append(new_line_id)
 
 
 
-        #board.update()
+            ### step by step
+            #if function.line_id != "null":
+            #    board.delete(function.line_id)
+            #
+            #function.line_id = board.create_line((coordFirst[2] + 2.5)*MAX, (coordFirst[3] + 2.5)*MAX,
+            #                            (coordLast[2] + 2.5)*MAX, (coordLast[3] + 2.5)*MAX, arrow=tk.LAST, width=3, fill='green')
+            #
+            #
+        else:
+            function.time_line_array.pop(len(function.time_line_array)-2)
+
+        print(float(function.time_line_array[-1]) - float(function.time_line_array[0]))
+        if len(function.time_line_array) > 1:
+            sleep(float(function.time_line_array[1]) - float(function.time_line_array[0]))
+        if (float(function.time_line_array[-1]) - float(function.time_line_array[0])) >= 1:
+            while (float(function.time_line_array[-1]) - float(function.time_line_array[0])) >= 1:
+                function.time_line_array.pop(0)
+                board.delete(function.line_id_array[0])
+                function.line_id_array.pop(0)
+                print("pocet casov: " + str(len(function.time_line_array)))
+                print("pocet ciar: " + str(len(function.line_id_array)))
+
+
+
+        #board.after(int(function.speed*1000),board.update())
+
+
+
+        board.update()
         #sleep(function.speed)
 
 

@@ -7,6 +7,7 @@ global board
 #global my_string_var
 global stepLabel
 global textLabel
+global timeLabel
 def create_gui(gui):
     """
     Function for create GUI
@@ -56,6 +57,17 @@ def create_gui(gui):
     stepLabel = Label(gui, text=my_string_var.get())
     stepLabel.grid(row=3, column=5)
 
+    # global my_string_var
+    global timeLabel
+    # create a StringVar class
+    my_time_var = tk.StringVar()
+
+    # set the text
+    my_time_var.set("Time: 0s")
+
+    # create a label widget
+    timeLabel = Label(gui, text=my_time_var.get())
+    timeLabel.grid(row=4, column=5)
 
     global textLabel
     # create a StringVar class
@@ -65,7 +77,7 @@ def create_gui(gui):
     my_text_var.set("Meta-info")
 
     textLabel = tk.Text(gui, width=35)
-    textLabel.grid(row=5,column=5, columnspan=2)
+    textLabel.grid(row=6,column=5, columnspan=2)
     textLabel.insert(tk.END,my_text_var.get())
 
 

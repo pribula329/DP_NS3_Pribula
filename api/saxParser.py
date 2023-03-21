@@ -14,6 +14,7 @@ class NS3Handler(xml.sax.handler.ContentHandler):
         self.node = []
         self.transport = []
         self.metaInfo= []
+        self.transportTime = []
         self.CurrentCount = 0
         self.transportCount = 0
 
@@ -47,6 +48,8 @@ class NS3Handler(xml.sax.handler.ContentHandler):
             info = attributes["meta-info"]
             print(info)
             self.metaInfo.append(info)
+            timeTransport = attributes["fbTx"]
+            self.transportTime.append(timeTransport)
 
 
 
