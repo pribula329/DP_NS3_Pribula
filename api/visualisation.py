@@ -30,7 +30,7 @@ def create_node(board, handler):
 
         board.create_oval(coord, fill="red")
         #/2 for input ID to node
-        board.create_text(float((coord[0]+coord[2])/2.0), float((coord[1]+coord[3])/2.0), text=i[0], fill="white")
+        board.create_text(float((coord[0]+coord[2])/2.0), float((coord[1]+coord[3])/2.0), text=handler.nodeDesc[str(i[0])], fill="white")
 
         # move board
         board.bind("<ButtonPress-1>", lambda event: move.move_start(event, board))

@@ -12,11 +12,13 @@ class NS3Handler(xml.sax.handler.ContentHandler):
         self.CurrentData = ""
         self.address = ""
         self.node = []
+        self.nodeDesc = {}
         self.transport = []
         self.metaInfo= []
         self.transportTime = []
         self.CurrentCount = 0
         self.transportCount = 0
+
 
     # Call when an element starts
     def startElement(self, tag, attributes):
@@ -32,6 +34,13 @@ class NS3Handler(xml.sax.handler.ContentHandler):
             print("LocX:", locX)
             print("LocY:", locY)
             self.node.append([int(id),int(sysId),float(locX),float(locY)])
+            self.nodeDesc.update({id : id})
+        if tag== "nu":
+            node = attributes["id"]
+            type = attributes["p"]
+            if type=="d":
+                self.nodeDesc.update({node : attributes["descr"]})
+
         if tag == "ip":
             print("*****IP*****")
             n = attributes["n"]
