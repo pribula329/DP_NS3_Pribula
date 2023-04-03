@@ -6,7 +6,8 @@ path = ""
 speed = 1.0
 line_id = "null"
 line_id_array = []
-time_line_array= []
+time_line_array= [0]
+help_time_line_array= []
 simulationOnOff = True
 count_iteration = 0
 max_iteration = 0
@@ -36,6 +37,7 @@ def start_simulation():
     global count_iteration
     count_iteration = 0
     simulationOnOff = True
+    init()
     #visualization comunication
     visualisation.create_transport_line(board=gui.board, handler=saxParser.handler, iteration=count_iteration)
 
@@ -58,6 +60,8 @@ def forward_simulation():
 def back_simulation():
     visualisation.create_step_line(board=gui.board, handler=saxParser.handler, iteration=count_iteration, step="b")
 
+def start_delete():
+    visualisation.time_line_delete(board=gui.board)
 
 def change_speed(varScaleSpeed):
     """
@@ -67,4 +71,14 @@ def change_speed(varScaleSpeed):
     global speed
     speed = 1.0 - float(varScaleSpeed)
 
-
+def init():
+    global line_id
+    global line_id_array
+    global time_line_array
+    global help_time_line_array
+    global simulationOnOff
+    line_id = "null"
+    line_id_array = []
+    time_line_array = [0]
+    help_time_line_array = []
+    simulationOnOff = True

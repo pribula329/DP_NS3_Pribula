@@ -1,3 +1,5 @@
+import time
+
 from api import function
 from api import saxParser
 import tkinter as tk
@@ -5,8 +7,10 @@ from time import sleep
 from GUI import move
 from GUI import zoom
 from GUI import gui
-MAX = 5.0
+import asyncio
 
+MAX = 5.0
+COUNT_TIME = 0
 
 def create_node(board, handler):
     """
@@ -14,6 +18,8 @@ def create_node(board, handler):
     :param board: Tkinter board
     :param handler: Sax parser handler with data
     """
+    global COUNT_TIME
+    COUNT_TIME = 0
     for i in handler.node:
         #+5 for biggest size
         coord = float(i[2]), float(i[3]), float(i[2])+MAX, float(i[3])+MAX
@@ -37,7 +43,7 @@ def create_node(board, handler):
         board.bind("<B1-Motion>", lambda event: move.move_move(event, board))
 
         board.bind("<ButtonPress-2>", lambda event: move.pressed2(event, board))
-        board.bind("<Motion>", lambda event: move.move_move2(event, board))
+#        board.bind("<Motion>", lambda event: move.move_move2(event, board))
         board.update()
 
 
@@ -53,15 +59,16 @@ def create_transport_line(board, handler, iteration):
     # todo ZOOM
     # windows scroll
     #board.bind("<MouseWheel>", lambda event: zoom.zoomer(event, board))
-
+    print("-----------------")
     #line_id = "null"
-    print(function.simulationOnOff)
+    t1_start = time.time()
+    #print(function.simulationOnOff)
     for t in handler.transport[iteration:]:
         if not function.simulationOnOff:
             break
 
         function.count_iteration = function.count_iteration + 1
-        print(function.count_iteration)
+        #print(function.count_iteration)
         gui_update(handler=handler)
 
         #check change position
@@ -97,7 +104,8 @@ def create_transport_line(board, handler, iteration):
             #
             #
         else:
-            function.time_line_array.pop(len(function.time_line_array)-2)
+            function.help_time_line_array.pop(len(function.help_time_line_array)-2)
+
 
 
         time_line_delete(board)
@@ -106,22 +114,30 @@ def create_transport_line(board, handler, iteration):
         #board.after(int(function.speed*1000),board.update())
 
 
-
         board.update()
         #sleep(function.speed)
+    t1_stop = time.time()
+
+
+    print("Elapsed time during the whole program in seconds:",
+          t1_stop - t1_start)
 
 
 def time_line_delete(board):
+    global COUNT_TIME
     if len(function.time_line_array) > 1:
-        sleep(float(function.time_line_array[1]) - float(function.time_line_array[0]) + function.speed)
+        #print(function.time_line_array[COUNT_TIME+1])
+        #print(function.time_line_array[COUNT_TIME])
+        #print(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME]))
+        sleep(abs(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME])))
+        COUNT_TIME = COUNT_TIME + 1
 
-    if (float(function.time_line_array[-1]) - float(function.time_line_array[0])) >= 1:
-        while (float(function.time_line_array[-1]) - float(function.time_line_array[0])) >= 1:
-            function.time_line_array.pop(0)
-            board.delete(function.line_id_array[0])
-            function.line_id_array.pop(0)
-            print("pocet casov: " + str(len(function.time_line_array)))
-            print("pocet ciar: " + str(len(function.line_id_array)))
+    while (float(function.help_time_line_array[-1]) - float(function.help_time_line_array[0])) >= 1:
+        function.help_time_line_array.pop(0)
+        board.delete(function.line_id_array[0])
+        function.line_id_array.pop(0)
+        #print("pocet casov: " + str(len(function.help_time_line_array)))
+        #print("pocet ciar: " + str(len(function.line_id_array)))
 
 
 def create_step_line(board, handler, iteration, step):
@@ -168,16 +184,20 @@ def create_step_line(board, handler, iteration, step):
 
 
 def check_transport(handler, iteration, iterationNext):
-    trans = handler.transport[iteration]
-    transNext = handler.transport[iterationNext]
-    print(trans)
-    print(transNext)
-    if trans==transNext:
-        print("su rovnake")
-        return True
-    else:
-        print("su ine")
+    try:
+        trans = handler.transport[iteration]
+        transNext = handler.transport[iterationNext]
+        #print(trans)
+        #print(transNext)
+        if trans == transNext:
+            #print("su rovnake")
+            return True
+        else:
+            #print("su ine")
+            return False
+    except:
         return False
+
 
 def new_node_create(board, handler, iteration):
     for x in handler.nodePos:
@@ -193,15 +213,15 @@ def new_node_create(board, handler, iteration):
             handler.node[x[0]][3] = x[2]
             node = handler.node[x[0]]
             coord = float(node[2]), float(node[3]), float(node[2]) + MAX, float(node[3]) + MAX
-            print(type(coord[0]))
+            #print(type(coord[0]))
             ###only for max point later DELETE
             y = list(coord)
             for c in range(len(y)):
-                print(y[c])
+                #print(y[c])
                 y[c] = y[c] * MAX
             coord = tuple(y)
 
-            print(type(coord[0]))
+            #print(type(coord[0]))
 
 
             id_node = board.create_oval(coord, fill="red")
@@ -218,6 +238,7 @@ def gui_update(handler):
     gui.textLabel.insert(tk.END, handler.metaInfo[function.count_iteration - 1])
     gui.timeLabel.config(text="Time: " + handler.transportTime[function.count_iteration - 1] + " s")
     function.time_line_array.append(handler.transportTime[function.count_iteration - 1])
+    function.help_time_line_array.append(handler.transportTime[function.count_iteration - 1])
 
 def delete_all(board):
     for x in function.line_id_array:
