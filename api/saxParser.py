@@ -13,11 +13,13 @@ class NS3Handler(xml.sax.handler.ContentHandler):
         self.address = ""
         self.node = []
         self.nodeDesc = {}
+        self.nodePos = []
         self.transport = []
         self.metaInfo= []
         self.transportTime = []
         self.CurrentCount = 0
         self.transportCount = 0
+        self.wifiTransportHelp = {}
 
 
     # Call when an element starts
@@ -40,6 +42,13 @@ class NS3Handler(xml.sax.handler.ContentHandler):
             type = attributes["p"]
             if type=="d":
                 self.nodeDesc.update({node : attributes["descr"]})
+            if type=="p":
+                id = int(attributes["id"])
+                locX = float(attributes["x"])
+                locY = float(attributes["y"])
+                posUpdate = [id,locX,locY,self.transportCount]
+                self.nodePos.append(posUpdate)
+                print(posUpdate)
 
         if tag == "ip":
             print("*****IP*****")
@@ -59,7 +68,23 @@ class NS3Handler(xml.sax.handler.ContentHandler):
             self.metaInfo.append(info)
             timeTransport = attributes["fbTx"]
             self.transportTime.append(timeTransport)
+        if tag == "pr":
+            uID = attributes["uId"]
+            fId = attributes["fId"]
+            fbTx = attributes["fbTx"]
+            info = attributes["meta-info"]
 
+            self.wifiTransportHelp.update({uID: [fId, fbTx, info]})
+
+        if tag == "wpr":
+            uID = attributes["uId"]
+            wifiHelp = self.wifiTransportHelp.get(uID)
+            fId = wifiHelp[0]
+            tId = attributes["tId"]
+            self.transport.append([int(fId),int(tId)])
+            self.transportCount += 1
+            self.metaInfo.append(wifiHelp[2])
+            self.transportTime.append(wifiHelp[1])
 
 
     # Call when an elements ends

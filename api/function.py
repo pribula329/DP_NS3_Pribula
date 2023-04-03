@@ -10,6 +10,7 @@ time_line_array= []
 simulationOnOff = True
 count_iteration = 0
 max_iteration = 0
+node_id = {}
 def open_file():
     """
         Function for open file and draw nodes on board
