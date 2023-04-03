@@ -36,7 +36,7 @@ def create_gui(gui):
     l1 = Label(gui, text="Slow")
     l1.grid(row=0, column=5)
     varScale = tk.DoubleVar()
-    s1 = tk.Scale(gui, from_=0.0, to=2.0, orient="horizontal", resolution=0.10,
+    s1 = tk.Scale(gui, from_=0.0, to=1.0, orient="horizontal", resolution=0.10,
                   command=function.change_speed, variable=varScale)
     s1.set(1.0)
     s1.grid(row=1, column=5, columnspan=2, rowspan=1)

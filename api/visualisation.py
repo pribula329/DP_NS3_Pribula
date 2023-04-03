@@ -62,11 +62,7 @@ def create_transport_line(board, handler, iteration):
 
         function.count_iteration = function.count_iteration + 1
         print(function.count_iteration)
-        gui.stepLabel.config(text="Steps: " + str(function.count_iteration) + "/" + str(function.max_iteration))
-        gui.textLabel.delete('1.0',tk.END)
-        gui.textLabel.insert(tk.END,handler.metaInfo[function.count_iteration-1])
-        gui.timeLabel.config(text="Time: " + handler.transportTime[function.count_iteration-1] +" s")
-        function.time_line_array.append(handler.transportTime[function.count_iteration - 1])
+        gui_update(handler=handler)
 
         #check change position
         if function.count_iteration in [517,520,523,529,532,538]:
@@ -103,19 +99,8 @@ def create_transport_line(board, handler, iteration):
         else:
             function.time_line_array.pop(len(function.time_line_array)-2)
 
-        print(float(function.time_line_array[-1]) - float(function.time_line_array[0]))
 
-        if len(function.time_line_array) > 1:
-            sleep(float(function.time_line_array[1]) - float(function.time_line_array[0]))
-
-        if (float(function.time_line_array[-1]) - float(function.time_line_array[0])) >= 1:
-            while (float(function.time_line_array[-1]) - float(function.time_line_array[0])) >= 1:
-                function.time_line_array.pop(0)
-                board.delete(function.line_id_array[0])
-                function.line_id_array.pop(0)
-                print("pocet casov: " + str(len(function.time_line_array)))
-                print("pocet ciar: " + str(len(function.line_id_array)))
-
+        time_line_delete(board)
 
 
         #board.after(int(function.speed*1000),board.update())
@@ -126,7 +111,22 @@ def create_transport_line(board, handler, iteration):
         #sleep(function.speed)
 
 
+def time_line_delete(board):
+    if len(function.time_line_array) > 1:
+        sleep(float(function.time_line_array[1]) - float(function.time_line_array[0]) + function.speed)
+
+    if (float(function.time_line_array[-1]) - float(function.time_line_array[0])) >= 1:
+        while (float(function.time_line_array[-1]) - float(function.time_line_array[0])) >= 1:
+            function.time_line_array.pop(0)
+            board.delete(function.line_id_array[0])
+            function.line_id_array.pop(0)
+            print("pocet casov: " + str(len(function.time_line_array)))
+            print("pocet ciar: " + str(len(function.line_id_array)))
+
+
 def create_step_line(board, handler, iteration, step):
+    delete_all(board)
+
     check = False
     if step=="f":
         check = check_transport(handler=handler, iteration=function.count_iteration, iterationNext=function.count_iteration + 1)
@@ -147,9 +147,8 @@ def create_step_line(board, handler, iteration, step):
         coordLast = handler.node[last]
         function.count_iteration = function.count_iteration - 1
 
-    gui.stepLabel.config(text="Steps: " + str(function.count_iteration) + "/" + str(function.max_iteration))
-    gui.textLabel.delete('1.0', tk.END)
-    gui.textLabel.insert(tk.END, handler.metaInfo[function.count_iteration - 1])
+    gui_update(handler=handler)
+
     if not check:
 
         if function.line_id != "null":
@@ -161,8 +160,9 @@ def create_step_line(board, handler, iteration, step):
         # line_id = board.create_line((coordFirst[2] + 2.5), (coordFirst[3] + 2.5),
         #                  (coordLast[2] + 2.5), (coordLast[3] + 2.5), arrow=tk.LAST)
 
+    board.update()
 
-    board.after(int(function.speed * 1000), board.update())
+
 
 
 
@@ -212,3 +212,14 @@ def new_node_create(board, handler, iteration):
 
 
 
+def gui_update(handler):
+    gui.stepLabel.config(text="Steps: " + str(function.count_iteration) + "/" + str(function.max_iteration))
+    gui.textLabel.delete('1.0', tk.END)
+    gui.textLabel.insert(tk.END, handler.metaInfo[function.count_iteration - 1])
+    gui.timeLabel.config(text="Time: " + handler.transportTime[function.count_iteration - 1] + " s")
+    function.time_line_array.append(handler.transportTime[function.count_iteration - 1])
+
+def delete_all(board):
+    for x in function.line_id_array:
+        board.delete(x)
+    function.time_line_array = []

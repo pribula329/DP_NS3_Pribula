@@ -65,10 +65,6 @@ def change_speed(varScaleSpeed):
         :param varScaleSpeed: Value of speed from user
     """
     global speed
-    if float(varScaleSpeed)>1:
-        speed = 2.05 - float(varScaleSpeed)
-    else:
-        speed = 1.0 + float(varScaleSpeed)
+    speed = 1.0 - float(varScaleSpeed)
 
-    print(speed)
 
