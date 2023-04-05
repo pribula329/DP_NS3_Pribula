@@ -10,9 +10,11 @@ class NS3Handler(xml.sax.handler.ContentHandler):
     """
     def __init__(self):
         self.CurrentData = ""
-        self.address = ""
+        self.CurrentNode = ""
+        self.address = []
         self.node = []
         self.nodeDesc = {}
+        self.nodeAddress = {}
         self.nodePos = []
         self.transport = []
         self.metaInfo= []
@@ -53,6 +55,7 @@ class NS3Handler(xml.sax.handler.ContentHandler):
         if tag == "ip":
             print("*****IP*****")
             n = attributes["n"]
+            self.CurrentNode = n
             print("ID ip:", n)
         if tag == "p":
             print("***** P *****")
@@ -93,13 +96,16 @@ class NS3Handler(xml.sax.handler.ContentHandler):
             print("Address:", self.address)
         if tag == "ip":
             print("Count of address:", self.CurrentCount)
+            self.nodeAddress.update({self.CurrentNode: self.address})
             self.CurrentCount = 0
+            self.CurrentNode = ""
+            self.address = []
         self.CurrentData = ""
 
     # Call when a character is read
     def characters(self, content):
         if self.CurrentData == "address":
-            self.address = content
+            self.address.append(content)
             value = count(self.CurrentCount)
             self.CurrentCount = value
 

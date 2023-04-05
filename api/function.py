@@ -1,4 +1,5 @@
 from tkinter import filedialog
+from tkinter import END
 from api import saxParser
 from api import visualisation
 from GUI import gui
@@ -26,6 +27,9 @@ def open_file():
     max_iteration = saxParser.handler.transportCount
     gui.stepLabel.config(text="Steps: "+ str(count_iteration)+"/"+str(max_iteration))
     visualisation.create_node(board=gui.board, handler=saxParser.handler)
+    ipInsert(handler=saxParser.handler)
+
+
 
 
 def start_simulation():
@@ -82,3 +86,13 @@ def init():
     time_line_array = [0]
     help_time_line_array = []
     simulationOnOff = True
+
+def ipInsert(handler):
+    gui.mylist.delete(0, END)
+    for x in handler.nodeDesc:
+        gui.mylist.insert(END, handler.nodeDesc.get(x)+":")
+        for z in handler.nodeAddress:
+            if x == z:
+                for address in handler.nodeAddress.get(z):
+                    gui.mylist.insert(END, address)
+                break

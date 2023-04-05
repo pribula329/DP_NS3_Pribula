@@ -8,6 +8,7 @@ global board
 global stepLabel
 global textLabel
 global timeLabel
+global mylist
 def create_gui(gui):
     """
     Function for create GUI
@@ -76,9 +77,21 @@ def create_gui(gui):
     # set the text
     my_text_var.set("Meta-info")
 
-    textLabel = tk.Text(gui, width=35)
-    textLabel.grid(row=6,column=5, columnspan=2)
+    textLabel = tk.Text(gui, width=35, height=15)
+    textLabel.grid(row=5,column=5,columnspan=2)
     textLabel.insert(tk.END,my_text_var.get())
+
+    #listbox ip Address
+    # Set the Menu initially
+    scrollMenu = tk.Scrollbar(gui, command=function.start_simulation)
+
+    scrollMenu.grid(row=6,column=5)
+    global mylist
+    mylist = tk.Listbox(gui, yscrollcommand=scrollMenu.set, height=10, width=30)
+
+    mylist.grid(row=6,column=5)
+
+    scrollMenu.config(command=mylist.yview)
 
 
 
