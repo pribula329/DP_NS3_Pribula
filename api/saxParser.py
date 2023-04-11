@@ -15,6 +15,7 @@ class NS3Handler(xml.sax.handler.ContentHandler):
         self.node = []
         self.nodeDesc = {}
         self.nodeAddress = {}
+        self.nodeChangePos = []
         self.nodePos = []
         self.transport = []
         self.metaInfo= []
@@ -50,6 +51,7 @@ class NS3Handler(xml.sax.handler.ContentHandler):
                 locY = float(attributes["y"])
                 posUpdate = [id,locX,locY,self.transportCount]
                 self.nodePos.append(posUpdate)
+                self.nodeChangePos.append(self.transportCount)
                 print(posUpdate)
 
         if tag == "ip":

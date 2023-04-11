@@ -72,7 +72,7 @@ def create_transport_line(board, handler, iteration):
         gui_update(handler=handler)
 
         #check change position
-        if function.count_iteration in [517,520,523,529,532,538]:
+        if function.count_iteration in handler.nodeChangePos:
             new_node_create(board, handler, function.count_iteration)
 
         if not check_transport(handler=handler,iteration=function.count_iteration,iterationNext=function.count_iteration+1):
@@ -129,7 +129,7 @@ def time_line_delete(board):
         #print(function.time_line_array[COUNT_TIME+1])
         #print(function.time_line_array[COUNT_TIME])
         #print(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME]))
-        sleep(abs(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME])))
+        sleep(abs(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME]))+function.speed)
         COUNT_TIME = COUNT_TIME + 1
 
     while (float(function.help_time_line_array[-1]) - float(function.help_time_line_array[0])) >= 1:
