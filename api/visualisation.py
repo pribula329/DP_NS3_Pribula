@@ -56,9 +56,7 @@ def create_transport_line(board, handler, iteration):
 
 
 
-    # todo ZOOM
-    # windows scroll
-    #board.bind("<MouseWheel>", lambda event: zoom.zoomer(event, board))
+
     print("-----------------")
     #line_id = "null"
     t1_start = time.time()
@@ -75,16 +73,15 @@ def create_transport_line(board, handler, iteration):
         if function.count_iteration in handler.nodeChangePos:
             new_node_create(board, handler, function.count_iteration)
 
-        if not check_transport(handler=handler,iteration=function.count_iteration,iterationNext=function.count_iteration+1):
+        if not check_transport(handler=handler,iteration=function.count_iteration-1,iterationNext=function.count_iteration):
             first, last = t[0], t[1]
             coordFirst = handler.node[int(first)].copy()
             color = 'green'
             if last == "-":
-                print("som tu")
+
                 coordLast = handler.node[int(first)].copy()
                 coordLast[3] = coordLast[3] + 5
                 color = 'red'
-                print(color)
 
             else:
                 coordLast = handler.node[int(last)].copy()
@@ -153,13 +150,16 @@ async def time_line_delete():
 
 async def delete_line(board):
 
-    while (float(function.help_time_line_array[-1]) - float(function.help_time_line_array[0])) >= 0.5:
-        function.help_time_line_array.pop(0)
-        board.delete(function.line_id_array[0])
-        function.line_id_array.pop(0)
-        #print("pocet casov: " + str(len(function.help_time_line_array)))
-        #print("pocet ciar: " + str(len(function.line_id_array)))
-    board.update()
+    try:
+        while (float(function.help_time_line_array[-1]) - float(function.help_time_line_array[0])) >= 0.5:
+            function.help_time_line_array.pop(0)
+            board.delete(function.line_id_array[0])
+            function.line_id_array.pop(0)
+            #print("pocet casov: " + str(len(function.help_time_line_array)))
+            #print("pocet ciar: " + str(len(function.line_id_array)))
+        board.update()
+    except:
+        print("ziadne ciary a casy zatial")
 
 
 
@@ -216,7 +216,6 @@ def create_step_line(board, handler, iteration, step):
 
 
 def check_transport(handler, iteration, iterationNext):
-    print(iteration)
     try:
 
         trans = handler.transport[iteration].copy()
