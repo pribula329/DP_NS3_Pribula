@@ -34,7 +34,7 @@ def create_node(board, handler):
         print(type(coord[0]))
 
 
-        id_node = board.create_oval(coord, fill="red")
+        id_node = board.create_oval(coord, fill="blue")
         #/2 for input ID to node
         id_text = board.create_text(float((coord[0]+coord[2])/2.0), float((coord[1]+coord[3])/2.0), text=handler.nodeDesc[str(i[0])], fill="white")
         function.node_id.update({i[0] : [id_node, id_text]})
@@ -255,7 +255,7 @@ def new_node_create(board, handler, iteration):
             #print(type(coord[0]))
 
 
-            id_node = board.create_oval(coord, fill="red")
+            id_node = board.create_oval(coord, fill="blue")
             # /2 for input ID to node
             id_text = board.create_text(float((coord[0] + coord[2]) / 2.0), float((coord[1] + coord[3]) / 2.0),
                                         text=handler.nodeDesc[str(x[0])], fill="white")
