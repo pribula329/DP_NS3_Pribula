@@ -27,6 +27,8 @@ def open_file():
     gui.board.delete("all")
     global max_iteration
     max_iteration = saxParser.handler.transportCount
+    global count_iteration
+    count_iteration = 0
     gui.stepLabel.config(text="Steps: "+ str(count_iteration)+"/"+str(max_iteration))
     visualisation.create_node(board=gui.board, handler=saxParser.handler)
     ipInsert(handler=saxParser.handler)
