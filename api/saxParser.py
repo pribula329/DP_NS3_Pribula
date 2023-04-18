@@ -65,7 +65,7 @@ class NS3Handler(xml.sax.handler.ContentHandler):
             tId = attributes["tId"]
             print("fId:", fId)
             print("tId:", tId)
-            self.transport.append([int(fId),int(tId)])
+            self.transport.append([fId,tId])
             self.transportCount += 1
             print("Transport count:", self.transportCount)
             info = attributes["meta-info"]
@@ -86,7 +86,7 @@ class NS3Handler(xml.sax.handler.ContentHandler):
             wifiHelp = self.wifiTransportHelp.get(uID)
             fId = wifiHelp[0]
             tId = attributes["tId"]
-            self.transport.append([int(fId),int(tId)])
+            self.transport.append([fId,tId])
             self.transportCount += 1
             self.metaInfo.append(wifiHelp[2])
             self.transportTime.append(wifiHelp[1])

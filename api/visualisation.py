@@ -77,9 +77,20 @@ def create_transport_line(board, handler, iteration):
 
         if not check_transport(handler=handler,iteration=function.count_iteration,iterationNext=function.count_iteration+1):
             first, last = t[0], t[1]
-            # print(first)
-            coordFirst = handler.node[first]
-            coordLast = handler.node[last]
+            coordFirst = handler.node[int(first)].copy()
+            color = 'green'
+            if last == "-":
+                print("som tu")
+                coordLast = handler.node[int(first)].copy()
+                coordLast[3] = coordLast[3] + 5
+                color = 'red'
+                print(color)
+
+            else:
+                coordLast = handler.node[int(last)].copy()
+
+
+
             # print("scale",zoom.scale)
             #board.create_line((coordFirst[2] + 2.5) * zoom.scale, (coordFirst[3] + 2.5) * zoom.scale,
             #                  (coordLast[2] + 2.5) * zoom.scale, (coordLast[3] + 2.5) * zoom.scale, arrow=tk.LAST)
@@ -89,7 +100,7 @@ def create_transport_line(board, handler, iteration):
 
             new_line_id = board.create_line((coordFirst[2] + 2.5) * MAX, (coordFirst[3] + 2.5) * MAX,
                                                  (coordLast[2] + 2.5) * MAX, (coordLast[3] + 2.5) * MAX, arrow=tk.LAST,
-                                                 width=3, fill='green')
+                                                 width=3, fill=color)
 
             function.line_id_array.append(new_line_id)
 
@@ -142,7 +153,6 @@ async def time_line_delete():
 
 async def delete_line(board):
 
-
     while (float(function.help_time_line_array[-1]) - float(function.help_time_line_array[0])) >= 0.5:
         function.help_time_line_array.pop(0)
         board.delete(function.line_id_array[0])
@@ -158,23 +168,25 @@ def create_step_line(board, handler, iteration, step):
     delete_all(board)
 
     check = False
-    if step=="f":
-        check = check_transport(handler=handler, iteration=function.count_iteration, iterationNext=function.count_iteration + 1)
-        trans = handler.transport[iteration+1]
-        first, last = trans[0], trans[1]
-        # print(first)
-        coordFirst = handler.node[first]
-        coordLast = handler.node[last]
+    color = 'green'
+
+    trans = handler.transport[iteration]
+    first, last = trans[0], trans[1]
+    coordFirst = handler.node[int(first)].copy()
+
+    if last == "-":
+        coordLast = handler.node[int(first)].copy()
+        coordLast[3] = coordLast[3] + 5
+        color = 'red'
+
+    else:
+        coordLast = handler.node[int(last)].copy()
+
+
+    if step == "f":
         function.count_iteration = function.count_iteration + 1
 
-
-    if step=="b":
-        check = check_transport(handler=handler, iteration=function.count_iteration, iterationNext=function.count_iteration - 1)
-        trans = handler.transport[iteration - 1]
-        first, last = trans[0], trans[1]
-        # print(first)
-        coordFirst = handler.node[first]
-        coordLast = handler.node[last]
+    if step == "b":
         function.count_iteration = function.count_iteration - 1
 
     gui_update(handler=handler)
@@ -183,14 +195,13 @@ def create_step_line(board, handler, iteration, step):
     if function.count_iteration in handler.nodeChangePos:
         new_node_create(board, handler, function.count_iteration)
 
-    if not check:
 
-        if function.line_id != "null":
-            board.delete(function.line_id)
+    if function.line_id != "null":
+        board.delete(function.line_id)
 
-        function.line_id = board.create_line((coordFirst[2] + 2.5) * MAX, (coordFirst[3] + 2.5) * MAX,
-                                             (coordLast[2] + 2.5) * MAX, (coordLast[3] + 2.5) * MAX, arrow=tk.LAST, width=3,
-                                             fill='green')
+    function.line_id = board.create_line((coordFirst[2] + 2.5) * MAX, (coordFirst[3] + 2.5) * MAX,
+                                        (coordLast[2] + 2.5) * MAX, (coordLast[3] + 2.5) * MAX, arrow=tk.LAST, width=3,
+                                        fill=color)
         # line_id = board.create_line((coordFirst[2] + 2.5), (coordFirst[3] + 2.5),
         #                  (coordLast[2] + 2.5), (coordLast[3] + 2.5), arrow=tk.LAST)
 
@@ -202,16 +213,16 @@ def create_step_line(board, handler, iteration, step):
 
 
 def check_transport(handler, iteration, iterationNext):
+    print(iteration)
     try:
-        trans = handler.transport[iteration]
-        transNext = handler.transport[iterationNext]
-        #print(trans)
-        #print(transNext)
+
+        trans = handler.transport[iteration].copy()
+        transNext = handler.transport[iterationNext].copy()
+
         if trans == transNext:
-            #print("su rovnake")
+
             return True
         else:
-            #print("su ine")
             return False
     except:
         return False

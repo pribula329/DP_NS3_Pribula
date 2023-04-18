@@ -3,6 +3,7 @@ from tkinter import END
 from api import saxParser
 from api import visualisation
 from GUI import gui
+from memory_profiler import profile
 path = ""
 speed = 1.0
 line_id = "null"
@@ -13,6 +14,7 @@ simulationOnOff = True
 count_iteration = 0
 max_iteration = 0
 node_id = {}
+@profile
 def open_file():
     """
         Function for open file and draw nodes on board
