@@ -169,8 +169,17 @@ def create_step_line(board, handler, iteration, step):
 
     check = False
     color = 'green'
+    trans = []
+    if step=="f":
+        trans = handler.transport[iteration]
+        function.count_iteration = function.count_iteration + 1
 
-    trans = handler.transport[iteration]
+
+    if step=="b":
+        trans = handler.transport[iteration - 2]
+        function.count_iteration = function.count_iteration - 1
+
+
     first, last = trans[0], trans[1]
     coordFirst = handler.node[int(first)].copy()
 
@@ -182,18 +191,12 @@ def create_step_line(board, handler, iteration, step):
     else:
         coordLast = handler.node[int(last)].copy()
 
-
-    if step == "f":
-        function.count_iteration = function.count_iteration + 1
-
-    if step == "b":
-        function.count_iteration = function.count_iteration - 1
-
     gui_update(handler=handler)
 
     # check change position
     if function.count_iteration in handler.nodeChangePos:
         new_node_create(board, handler, function.count_iteration)
+
 
 
     if function.line_id != "null":
