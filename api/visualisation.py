@@ -12,6 +12,7 @@ import asyncio
 MAX = 5.0
 COUNT_TIME = 0
 
+
 def create_node(board, handler):
     """
     Function for draw nodes to board
@@ -21,10 +22,10 @@ def create_node(board, handler):
     global COUNT_TIME
     COUNT_TIME = 0
     for i in handler.node:
-        #+5 for biggest size
+        # +MAX for biggest size
         coord = float(i[2]), float(i[3]), float(i[2])+MAX, float(i[3])+MAX
         print(type(coord[0]))
-        ###only for max point later DELETE
+
         y = list(coord)
         for c in range(len(y)):
             print(y[c])
@@ -35,15 +36,17 @@ def create_node(board, handler):
 
 
         id_node = board.create_oval(coord, fill="blue")
+
         #/2 for input ID to node
         id_text = board.create_text(float((coord[0]+coord[2])/2.0), float((coord[1]+coord[3])/2.0), text=handler.nodeDesc[str(i[0])], fill="white")
         function.node_id.update({i[0] : [id_node, id_text]})
+
         # move board
         board.bind("<ButtonPress-1>", lambda event: move.move_start(event, board))
         board.bind("<B1-Motion>", lambda event: move.move_move(event, board))
 
         board.bind("<ButtonPress-2>", lambda event: move.pressed2(event, board))
-#        board.bind("<Motion>", lambda event: move.move_move2(event, board))
+        # board.bind("<Motion>", lambda event: move.move_move2(event, board))
         board.update()
 
 
@@ -53,9 +56,6 @@ def create_transport_line(board, handler, iteration):
     :param board: Tkinter board
     :param handler: Sax parser handler with data
     """
-
-
-
 
     print("-----------------")
     #line_id = "null"
