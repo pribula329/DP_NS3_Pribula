@@ -11,7 +11,7 @@ import asyncio
 
 MAX = 5.0
 COUNT_TIME = 0
-
+DELETE_ON_OFF = True
 
 def create_node(board, handler):
     """
@@ -59,16 +59,22 @@ def create_transport_line(board, handler, iteration):
 
     print("-----------------")
     #line_id = "null"
-    t1_start = time.time()
+
     #print(function.simulationOnOff)
     for t in handler.transport[iteration:]:
         if not function.simulationOnOff:
             break
 
-        function.count_iteration = function.count_iteration + 1
+
+        helper_update(handler)
+
+        global DELETE_ON_OFF
+        DELETE_ON_OFF = True
+        call_async(board)
         #print(function.count_iteration)
         gui_update(handler=handler)
 
+        function.count_iteration = function.count_iteration + 1
         #check change position
         if function.count_iteration in handler.nodeChangePos:
             new_node_create(board, handler, function.count_iteration)
@@ -117,9 +123,6 @@ def create_transport_line(board, handler, iteration):
 
 
 
-
-        call_async(board)
-
         #board.after(int(function.speed*1000),board.update())
 
 
@@ -129,7 +132,7 @@ def create_transport_line(board, handler, iteration):
 
 
     print("Elapsed time during the whole program in seconds:",
-          t1_stop - t1_start)
+          t1_stop - function.t1_start)
 
 
 async def call(board):
@@ -140,26 +143,38 @@ def call_async(board):
     loop.run_until_complete(call(board))
 async def time_line_delete():
     global COUNT_TIME
+    global DELETE_ON_OFF
     if len(function.time_line_array) > 1:
         #print(function.time_line_array[COUNT_TIME+1])
         #print(function.time_line_array[COUNT_TIME])
         #print(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME]))
+        print(abs(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME])))
         await asyncio.sleep(abs(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME]))+function.speed)
         COUNT_TIME = COUNT_TIME + 1
-
+    DELETE_ON_OFF = False
 
 async def delete_line(board):
+    while DELETE_ON_OFF:
 
-    try:
-        while (float(function.help_time_line_array[-1]) - float(function.help_time_line_array[0])) >= 0.5:
-            function.help_time_line_array.pop(0)
-            board.delete(function.line_id_array[0])
-            function.line_id_array.pop(0)
-            #print("pocet casov: " + str(len(function.help_time_line_array)))
-            #print("pocet ciar: " + str(len(function.line_id_array)))
-        board.update()
-    except:
-        print("ziadne ciary a casy zatial")
+        #print("Time")
+        #print(time.time() - function.t1_start)
+        #print("----------------")
+        #print(time.time() - function.t1_start - float(function.help_time_line_array[0]))
+        print(function.help_time_line_array)
+        #print("Pocet casov: " + str(len(function.line_id_array)))
+        try:
+            while ((time.time() - function.t1_start) - float(function.help_time_line_array[0])) >= 0.5:
+
+                function.help_time_line_array.pop(0)
+                board.delete(function.line_id_array[0])
+                function.line_id_array.pop(0)
+
+                #print("pocet casov: " + str(len(function.help_time_line_array)))
+                #print("pocet ciar: " + str(len(function.line_id_array)))
+            board.update()
+        except:
+            print("ziadne ciary a casy zatial")
+        await asyncio.sleep(0)
 
 
 
@@ -264,12 +279,14 @@ def new_node_create(board, handler, iteration):
 
 
 def gui_update(handler):
-    gui.stepLabel.config(text="Steps: " + str(function.count_iteration) + "/" + str(function.max_iteration))
+    gui.stepLabel.config(text="Steps: " + str(function.count_iteration+1) + "/" + str(function.max_iteration))
     gui.textLabel.delete('1.0', tk.END)
-    gui.textLabel.insert(tk.END, handler.metaInfo[function.count_iteration - 1])
-    gui.timeLabel.config(text="Time: " + handler.transportTime[function.count_iteration - 1] + " s")
-    function.time_line_array.append(handler.transportTime[function.count_iteration - 1])
-    function.help_time_line_array.append(handler.transportTime[function.count_iteration - 1])
+    gui.textLabel.insert(tk.END, handler.metaInfo[function.count_iteration])
+    gui.timeLabel.config(text="Time: " + handler.transportTime[function.count_iteration] + " s")
+
+def helper_update(handler):
+    function.time_line_array.append(handler.transportTime[function.count_iteration])
+    function.help_time_line_array.append(handler.transportTime[function.count_iteration])
 
 
 def delete_all(board):

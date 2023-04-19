@@ -4,6 +4,7 @@ from api import saxParser
 from api import visualisation
 from GUI import gui
 from memory_profiler import profile
+import time
 path = ""
 speed = 1.0
 line_id = "null"
@@ -14,6 +15,7 @@ simulationOnOff = True
 count_iteration = 0
 max_iteration = 0
 node_id = {}
+t1_start = 0.0
 @profile
 def open_file():
     """
@@ -29,6 +31,8 @@ def open_file():
     max_iteration = saxParser.handler.transportCount
     global count_iteration
     count_iteration = 0
+
+
     gui.stepLabel.config(text="Steps: "+ str(count_iteration)+"/"+str(max_iteration))
     visualisation.create_node(board=gui.board, handler=saxParser.handler)
     ipInsert(handler=saxParser.handler)
@@ -46,6 +50,8 @@ def start_simulation():
     count_iteration = 0
     simulationOnOff = True
     init()
+    global t1_start
+    t1_start = time.time()
     #visualization comunication
     visualisation.create_transport_line(board=gui.board, handler=saxParser.handler, iteration=count_iteration)
 
