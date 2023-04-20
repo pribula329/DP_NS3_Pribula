@@ -16,6 +16,7 @@ count_iteration = 0
 max_iteration = 0
 node_id = {}
 t1_start = 0.0
+t1_pause = 0.0
 @profile
 def open_file():
     """
@@ -52,18 +53,25 @@ def start_simulation():
     init()
     global t1_start
     t1_start = time.time()
+    visualisation.COUNT_TIME = 0
     #visualization comunication
     visualisation.create_transport_line(board=gui.board, handler=saxParser.handler, iteration=count_iteration)
 
 def pause_simulation():
     global simulationOnOff
+    global t1_pause
     simulationOnOff = False
+    t1_pause = time.time()
 
 
 def resume_simulation():
     global simulationOnOff
+    global t1_pause
+    global t1_start
     simulationOnOff = True
     print(count_iteration)
+    t1_start = time.time() - t1_pause + t1_start
+    print(t1_start)
     visualisation.create_transport_line(board=gui.board, handler=saxParser.handler, iteration=count_iteration)
 
 

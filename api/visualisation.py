@@ -12,7 +12,7 @@ import asyncio
 MAX = 5.0
 COUNT_TIME = 0
 DELETE_ON_OFF = True
-
+SLEEP_COUNT = 0.0
 def create_node(board, handler):
     """
     Function for draw nodes to board
@@ -144,12 +144,19 @@ def call_async(board):
 async def time_line_delete():
     global COUNT_TIME
     global DELETE_ON_OFF
+    global SLEEP_COUNT
     if len(function.time_line_array) > 1:
         #print(function.time_line_array[COUNT_TIME+1])
         #print(function.time_line_array[COUNT_TIME])
         #print(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME]))
-        print(abs(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME])))
-        await asyncio.sleep(abs(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME]))+function.speed)
+        #print(abs(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME])))
+        sleep_time = abs(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME]))
+        if sleep_time > 0:
+            print("Sleep Time: " + str(sleep_time+function.speed))
+            SLEEP_COUNT += function.speed
+            await asyncio.sleep(sleep_time+function.speed)
+        else:
+            await asyncio.sleep(0)
         COUNT_TIME = COUNT_TIME + 1
     DELETE_ON_OFF = False
 
@@ -157,13 +164,14 @@ async def delete_line(board):
     while DELETE_ON_OFF:
 
         #print("Time")
-        #print(time.time() - function.t1_start)
-        #print("----------------")
-        #print(time.time() - function.t1_start - float(function.help_time_line_array[0]))
-        print(function.help_time_line_array)
+        #print(time.time() - function.t1_start - function.speed)
+        #print("Delay")
+
+        #print(function.help_time_line_array)
         #print("Pocet casov: " + str(len(function.line_id_array)))
         try:
-            while ((time.time() - function.t1_start) - float(function.help_time_line_array[0])) >= 0.5:
+            print(time.time() - function.t1_start - SLEEP_COUNT - (float(function.help_time_line_array[0])))
+            while ((time.time() - function.t1_start - SLEEP_COUNT) - (float(function.help_time_line_array[0]))) >= 0.5:
 
                 function.help_time_line_array.pop(0)
                 board.delete(function.line_id_array[0])
@@ -173,7 +181,8 @@ async def delete_line(board):
                 #print("pocet ciar: " + str(len(function.line_id_array)))
             board.update()
         except:
-            print("ziadne ciary a casy zatial")
+            #print("ziadne ciary a casy zatial")
+            None
         await asyncio.sleep(0)
 
 
