@@ -1,5 +1,8 @@
 import time
 
+from time_profiler import timer
+from memory_profiler import profile
+
 from api import function
 from api import saxParser
 import tkinter as tk
@@ -13,6 +16,7 @@ MAX = 5.0
 COUNT_TIME = 0
 DELETE_ON_OFF = True
 SLEEP_COUNT = 0.0
+DELAY_SLEEP=0.0
 def create_node(board, handler):
     """
     Function for draw nodes to board
@@ -24,15 +28,15 @@ def create_node(board, handler):
     for i in handler.node:
         # +MAX for biggest size
         coord = float(i[2]), float(i[3]), float(i[2])+MAX, float(i[3])+MAX
-        print(type(coord[0]))
+        #(type(coord[0]))
 
         y = list(coord)
         for c in range(len(y)):
-            print(y[c])
+            #print(y[c])
             y[c] = y[c]*MAX
         coord = tuple(y)
 
-        print(type(coord[0]))
+        #print(type(coord[0]))
 
 
         id_node = board.create_oval(coord, fill="blue")
@@ -49,7 +53,8 @@ def create_node(board, handler):
         # board.bind("<Motion>", lambda event: move.move_move2(event, board))
         board.update()
 
-
+@timer()
+@profile
 def create_transport_line(board, handler, iteration):
     """
     Function for draw line between 2 nodes
@@ -57,7 +62,6 @@ def create_transport_line(board, handler, iteration):
     :param handler: Sax parser handler with data
     """
 
-    print("-----------------")
     #line_id = "null"
 
     #print(function.simulationOnOff)
@@ -118,21 +122,28 @@ def create_transport_line(board, handler, iteration):
             #
             #
         else:
-            function.help_time_line_array.pop(len(function.help_time_line_array)-2)
+            if len(function.help_time_line_array)>1:
+                function.help_time_line_array.pop(len(function.help_time_line_array)-2)
 
+        try:
+            if (float(function.help_time_line_array[-1])) - (time.time() - function.t1_start - SLEEP_COUNT)>0:
+            #print((float(function.help_time_line_array[-1])) - (time.time() - function.t1_start - SLEEP_COUNT))
 
-
-
+                sleep(float(function.help_time_line_array[-1]) - (time.time() - function.t1_start - SLEEP_COUNT))
+        except:
+                #print("nestihol spat")
+            None
         #board.after(int(function.speed*1000),board.update())
 
-
-        board.update()
+        if function.count_iteration%150==0:
+            board.update()
         #sleep(function.speed)
     t1_stop = time.time()
 
 
-    print("Elapsed time during the whole program in seconds:",
-          t1_stop - function.t1_start)
+    #print("Elapsed time during the whole program in seconds:",
+     #     t1_stop - function.t1_start)
+    board.update()
 
 
 async def call(board):
@@ -150,9 +161,11 @@ async def time_line_delete():
         #print(function.time_line_array[COUNT_TIME])
         #print(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME]))
         #print(abs(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME])))
-        sleep_time = abs(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME]))
+        sleep_time = float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME])
+
         if sleep_time > 0:
-            print("Sleep Time: " + str(sleep_time+function.speed))
+
+            #print("Sleep Time: " + str(sleep_time+function.speed))
             SLEEP_COUNT += function.speed
             await asyncio.sleep(sleep_time+function.speed)
         else:
@@ -161,6 +174,7 @@ async def time_line_delete():
     DELETE_ON_OFF = False
 
 async def delete_line(board):
+
     while DELETE_ON_OFF:
 
         #print("Time")
@@ -170,20 +184,23 @@ async def delete_line(board):
         #print(function.help_time_line_array)
         #print("Pocet casov: " + str(len(function.line_id_array)))
         try:
-            print(time.time() - function.t1_start - SLEEP_COUNT - (float(function.help_time_line_array[0])))
+            #print(time.time() - function.t1_start - SLEEP_COUNT - (float(function.help_time_line_array[0])))
             while ((time.time() - function.t1_start - SLEEP_COUNT) - (float(function.help_time_line_array[0]))) >= 0.5:
 
                 function.help_time_line_array.pop(0)
                 board.delete(function.line_id_array[0])
                 function.line_id_array.pop(0)
 
+
                 #print("pocet casov: " + str(len(function.help_time_line_array)))
                 #print("pocet ciar: " + str(len(function.line_id_array)))
             board.update()
+
         except:
             #print("ziadne ciary a casy zatial")
             None
         await asyncio.sleep(0)
+
 
 
 

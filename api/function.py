@@ -3,8 +3,9 @@ from tkinter import END
 from api import saxParser
 from api import visualisation
 from GUI import gui
-from memory_profiler import profile
 import time
+from memory_profiler import profile
+from time_profiler import timer
 path = ""
 speed = 1.0
 line_id = "null"
@@ -17,7 +18,10 @@ max_iteration = 0
 node_id = {}
 t1_start = 0.0
 t1_pause = 0.0
-@profile
+
+
+
+
 def open_file():
     """
         Function for open file and draw nodes on board
@@ -25,20 +29,26 @@ def open_file():
     global path
     path = filedialog.askopenfilename(
         filetypes=[("SEM readable files", (".xml")), ("SEM XML files", ("*.xml", ".sem")), ("All files", ".*")])
-    saxParser.read_sax_parser(path)
-    # visualiztion node
+
     gui.board.delete("all")
+    vis()
+    # visualiztion node
+
+
+
+
+@timer()
+@profile
+def vis():
+    global path
+    saxParser.read_sax_parser(path)
+    visualisation.create_node(board=gui.board, handler=saxParser.handler)
     global max_iteration
     max_iteration = saxParser.handler.transportCount
     global count_iteration
     count_iteration = 0
-
-
-    gui.stepLabel.config(text="Steps: "+ str(count_iteration)+"/"+str(max_iteration))
-    visualisation.create_node(board=gui.board, handler=saxParser.handler)
+    gui.stepLabel.config(text="Steps: " + str(count_iteration) + "/" + str(max_iteration))
     ipInsert(handler=saxParser.handler)
-
-
 
 
 def start_simulation():

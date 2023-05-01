@@ -1,6 +1,7 @@
 import xml.sax
 from xml.sax.xmlreader import XMLReader
-
+from memory_profiler import profile
+from time_profiler import timer
 global handler
 
 class NS3Handler(xml.sax.handler.ContentHandler):
@@ -29,15 +30,15 @@ class NS3Handler(xml.sax.handler.ContentHandler):
     def startElement(self, tag, attributes):
         self.CurrentData = tag
         if tag == "node":
-            print("*****Node*****")
+            #print("*****Node*****")
             id = attributes["id"]
             sysId = attributes["sysId"]
             locX = attributes["locX"]
             locY = attributes["locY"]
-            print("ID:", id)
-            print("SysId:", sysId)
-            print("LocX:", locX)
-            print("LocY:", locY)
+            #print("ID:", id)
+            #print("SysId:", sysId)
+            #print("LocX:", locX)
+            #print("LocY:", locY)
             self.node.append([int(id),int(sysId),float(locX),float(locY)])
             self.nodeDesc.update({id : id})
         if tag== "nu":
@@ -52,24 +53,24 @@ class NS3Handler(xml.sax.handler.ContentHandler):
                 posUpdate = [id,locX,locY,self.transportCount]
                 self.nodePos.append(posUpdate)
                 self.nodeChangePos.append(self.transportCount)
-                print(posUpdate)
+                #print(posUpdate)
 
         if tag == "ip":
-            print("*****IP*****")
+            #print("*****IP*****")
             n = attributes["n"]
             self.CurrentNode = n
-            print("ID ip:", n)
+            #print("ID ip:", n)
         if tag == "p":
-            print("***** P *****")
+            #print("***** P *****")
             fId = attributes["fId"]
             tId = attributes["tId"]
-            print("fId:", fId)
-            print("tId:", tId)
+            #print("fId:", fId)
+            #print("tId:", tId)
             self.transport.append([fId,tId])
             self.transportCount += 1
-            print("Transport count:", self.transportCount)
+            #print("Transport count:", self.transportCount)
             info = attributes["meta-info"]
-            print(info)
+            #print(info)
             self.metaInfo.append(info)
             timeTransport = attributes["fbTx"]
             self.transportTime.append(timeTransport)
@@ -94,10 +95,10 @@ class NS3Handler(xml.sax.handler.ContentHandler):
 
     # Call when an elements ends
     def endElement(self, tag):
-        if self.CurrentData == "address":
-            print("Address:", self.address)
+        #if self.CurrentData == "address":
+         #   print("Address:", self.address)
         if tag == "ip":
-            print("Count of address:", self.CurrentCount)
+            #print("Count of address:", self.CurrentCount)
             self.nodeAddress.update({self.CurrentNode: self.address})
             self.CurrentCount = 0
             self.CurrentNode = ""
@@ -132,4 +133,3 @@ def read_sax_parser(path):
     handler = NS3Handler()
     saxParser.setContentHandler(handler)
     saxParser.parse(open(path))
-    print(handler.node)
