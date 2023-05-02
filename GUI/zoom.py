@@ -3,7 +3,7 @@ scale = 1
 x = 0
 y = 0
 
-# windows zoom
+# windows zoom from BP
 def zoomer(event, canvas):
     global fontSize
     global scale

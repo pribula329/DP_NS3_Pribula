@@ -37,8 +37,7 @@ def open_file():
 
 
 
-@timer()
-@profile
+
 def vis():
     global path
     saxParser.read_sax_parser(path)

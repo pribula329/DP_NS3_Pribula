@@ -28,16 +28,11 @@ def create_node(board, handler):
     for i in handler.node:
         # +MAX for biggest size
         coord = float(i[2]), float(i[3]), float(i[2])+MAX, float(i[3])+MAX
-        #(type(coord[0]))
 
         y = list(coord)
         for c in range(len(y)):
-            #print(y[c])
             y[c] = y[c]*MAX
         coord = tuple(y)
-
-        #print(type(coord[0]))
-
 
         id_node = board.create_oval(coord, fill="blue")
 
@@ -50,11 +45,9 @@ def create_node(board, handler):
         board.bind("<B1-Motion>", lambda event: move.move_move(event, board))
 
         board.bind("<ButtonPress-2>", lambda event: move.pressed2(event, board))
-        # board.bind("<Motion>", lambda event: move.move_move2(event, board))
         board.update()
 
-@timer()
-@profile
+
 def create_transport_line(board, handler, iteration):
     """
     Function for draw line between 2 nodes
@@ -62,9 +55,6 @@ def create_transport_line(board, handler, iteration):
     :param handler: Sax parser handler with data
     """
 
-    #line_id = "null"
-
-    #print(function.simulationOnOff)
     for t in handler.transport[iteration:]:
         if not function.simulationOnOff:
             break
@@ -75,7 +65,6 @@ def create_transport_line(board, handler, iteration):
         global DELETE_ON_OFF
         DELETE_ON_OFF = True
         call_async(board)
-        #print(function.count_iteration)
         gui_update(handler=handler)
 
         function.count_iteration = function.count_iteration + 1
@@ -97,47 +86,28 @@ def create_transport_line(board, handler, iteration):
                 coordLast = handler.node[int(last)].copy()
 
 
-
-            # print("scale",zoom.scale)
-            #board.create_line((coordFirst[2] + 2.5) * zoom.scale, (coordFirst[3] + 2.5) * zoom.scale,
-            #                  (coordLast[2] + 2.5) * zoom.scale, (coordLast[3] + 2.5) * zoom.scale, arrow=tk.LAST)
-
-            #### append time of line which send data
-
-
+            #### append id of line which send data
             new_line_id = board.create_line((coordFirst[2] + 2.5) * MAX, (coordFirst[3] + 2.5) * MAX,
                                                  (coordLast[2] + 2.5) * MAX, (coordLast[3] + 2.5) * MAX, arrow=tk.LAST,
                                                  width=3, fill=color)
 
             function.line_id_array.append(new_line_id)
 
-
-
-            ### step by step
-            #if function.line_id != "null":
-            #    board.delete(function.line_id)
-            #
-            #function.line_id = board.create_line((coordFirst[2] + 2.5)*MAX, (coordFirst[3] + 2.5)*MAX,
-            #                            (coordLast[2] + 2.5)*MAX, (coordLast[3] + 2.5)*MAX, arrow=tk.LAST, width=3, fill='green')
-            #
-            #
         else:
             if len(function.help_time_line_array)>1:
                 function.help_time_line_array.pop(len(function.help_time_line_array)-2)
 
         try:
             if (float(function.help_time_line_array[-1])) - (time.time() - function.t1_start - SLEEP_COUNT)>0:
-            #print((float(function.help_time_line_array[-1])) - (time.time() - function.t1_start - SLEEP_COUNT))
 
                 sleep(float(function.help_time_line_array[-1]) - (time.time() - function.t1_start - SLEEP_COUNT))
         except:
-                #print("nestihol spat")
             None
-        #board.after(int(function.speed*1000),board.update())
+
 
         if function.count_iteration%150==0:
             board.update()
-        #sleep(function.speed)
+
     t1_stop = time.time()
 
 
@@ -157,15 +127,9 @@ async def time_line_delete():
     global DELETE_ON_OFF
     global SLEEP_COUNT
     if len(function.time_line_array) > 1:
-        #print(function.time_line_array[COUNT_TIME+1])
-        #print(function.time_line_array[COUNT_TIME])
-        #print(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME]))
-        #print(abs(float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME])))
         sleep_time = float(function.time_line_array[COUNT_TIME+1]) - float(function.time_line_array[COUNT_TIME])
 
         if sleep_time > 0:
-
-            #print("Sleep Time: " + str(sleep_time+function.speed))
             SLEEP_COUNT += function.speed
             await asyncio.sleep(sleep_time+function.speed)
         else:
@@ -177,27 +141,15 @@ async def delete_line(board):
 
     while DELETE_ON_OFF:
 
-        #print("Time")
-        #print(time.time() - function.t1_start - function.speed)
-        #print("Delay")
-
-        #print(function.help_time_line_array)
-        #print("Pocet casov: " + str(len(function.line_id_array)))
         try:
-            #print(time.time() - function.t1_start - SLEEP_COUNT - (float(function.help_time_line_array[0])))
             while ((time.time() - function.t1_start - SLEEP_COUNT) - (float(function.help_time_line_array[0]))) >= 0.5:
 
                 function.help_time_line_array.pop(0)
                 board.delete(function.line_id_array[0])
                 function.line_id_array.pop(0)
-
-
-                #print("pocet casov: " + str(len(function.help_time_line_array)))
-                #print("pocet ciar: " + str(len(function.line_id_array)))
             board.update()
 
         except:
-            #print("ziadne ciary a casy zatial")
             None
         await asyncio.sleep(0)
 
@@ -238,16 +190,12 @@ def create_step_line(board, handler, iteration, step):
     if function.count_iteration in handler.nodeChangePos:
         new_node_create(board, handler, function.count_iteration)
 
-
-
     if function.line_id != "null":
         board.delete(function.line_id)
 
     function.line_id = board.create_line((coordFirst[2] + 2.5) * MAX, (coordFirst[3] + 2.5) * MAX,
                                         (coordLast[2] + 2.5) * MAX, (coordLast[3] + 2.5) * MAX, arrow=tk.LAST, width=3,
                                         fill=color)
-        # line_id = board.create_line((coordFirst[2] + 2.5), (coordFirst[3] + 2.5),
-        #                  (coordLast[2] + 2.5), (coordLast[3] + 2.5), arrow=tk.LAST)
 
     board.update()
 
@@ -285,16 +233,11 @@ def new_node_create(board, handler, iteration):
             handler.node[x[0]][3] = x[2]
             node = handler.node[x[0]]
             coord = float(node[2]), float(node[3]), float(node[2]) + MAX, float(node[3]) + MAX
-            #print(type(coord[0]))
-            ###only for max point later DELETE
+
             y = list(coord)
             for c in range(len(y)):
-                #print(y[c])
                 y[c] = y[c] * MAX
             coord = tuple(y)
-
-            #print(type(coord[0]))
-
 
             id_node = board.create_oval(coord, fill="blue")
             # /2 for input ID to node
